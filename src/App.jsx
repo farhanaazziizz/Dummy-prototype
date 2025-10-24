@@ -155,37 +155,68 @@ function App() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar onSignatureSelect={setSelectedSignature} />
 
-        <div className="flex-1 relative bg-gray-100">
+        <div className="flex-1 relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
           {!pdfFile ? (
-            <div className="flex items-center justify-center h-full">
-              <div className="text-center">
-                <svg
-                  className="mx-auto h-24 w-24 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  />
-                </svg>
-                <h3 className="mt-4 text-lg font-medium text-gray-900">Upload a PDF to get started</h3>
-                <p className="mt-2 text-sm text-gray-500">
-                  Click "Upload PDF" button to begin signing your document
+            <div className="flex items-center justify-center h-full p-8">
+              <div className="text-center max-w-2xl">
+                <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-full p-8 inline-block mb-6 shadow-lg">
+                  <svg
+                    className="h-24 w-24 text-primary-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                    />
+                  </svg>
+                </div>
+                <h3 className="text-3xl font-bold text-gray-900 mb-3">Upload a PDF to Get Started</h3>
+                <p className="text-lg text-gray-600 mb-8">
+                  Click "Upload PDF" button in the top bar to begin signing your document
                 </p>
-                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
-                  <h4 className="text-sm font-semibold text-blue-900 mb-2">Quick Start Guide:</h4>
-                  <ol className="text-xs text-blue-800 text-left space-y-1 list-decimal list-inside">
-                    <li>Upload and save your signature image (left sidebar)</li>
-                    <li>Enter your name in the top bar</li>
-                    <li>Upload a PDF document</li>
-                    <li>Click on the PDF where you want to place your signature</li>
-                    <li>Drag corners to resize signature if needed</li>
-                    <li>Export your signed PDF</li>
-                  </ol>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-2xl p-6 shadow-soft">
+                  <div className="flex items-center justify-center mb-4">
+                    <div className="bg-blue-500 rounded-full p-2">
+                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h4 className="text-xl font-bold text-blue-900 ml-3">Quick Start Guide</h4>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-800">Upload Signature</p>
+                        <p className="text-xs text-gray-600">Upload your signature image in the left sidebar</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-800">Enter Your Name</p>
+                        <p className="text-xs text-gray-600">Type your name in the top bar input field</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-800">Upload PDF</p>
+                        <p className="text-xs text-gray-600">Click "Upload PDF" to select your document</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
+                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                      <div>
+                        <p className="text-sm font-semibold text-gray-800">Place & Sign</p>
+                        <p className="text-xs text-gray-600">Click on PDF to place signature, then export</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -217,10 +248,12 @@ function App() {
                     handleSignatureDragStop(sig.id, position);
                   }}
                   style={{
-                    border: '2px dashed #0ea5e9',
-                    background: 'rgba(14, 165, 233, 0.1)',
+                    border: '3px dashed #6366f1',
+                    background: 'rgba(99, 102, 241, 0.1)',
                     cursor: isDragging ? 'grabbing' : 'grab',
+                    borderRadius: '8px',
                   }}
+                  className="shadow-lg hover:shadow-xl transition-shadow"
                 >
                   <div className="relative h-full p-1">
                     <img
@@ -231,18 +264,18 @@ function App() {
                     />
                     <button
                       onClick={() => handleRemoveSignature(sig.id)}
-                      className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-lg"
+                      className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold shadow-lg hover:shadow-xl transition-all transform hover:scale-110"
                       style={{ pointerEvents: 'auto' }}
                     >
                       ×
                     </button>
                     <div
-                      className="absolute left-full ml-2 top-0 text-xs bg-white p-1 border border-gray-300 rounded shadow-sm"
+                      className="absolute left-full ml-3 top-0 text-xs bg-white px-3 py-2 border-2 border-primary-200 rounded-lg shadow-lg"
                       style={{ whiteSpace: 'nowrap', pointerEvents: 'none' }}
                     >
-                      <div className="font-medium">Digitally signed by</div>
-                      <div>{sig.userName}</div>
-                      <div className="text-gray-600">{sig.timestamp}</div>
+                      <div className="font-bold text-primary-700">Digitally signed by</div>
+                      <div className="font-semibold text-gray-800">{sig.userName}</div>
+                      <div className="text-gray-500 text-[10px]">{sig.timestamp}</div>
                     </div>
                   </div>
                 </Rnd>
