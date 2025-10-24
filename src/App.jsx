@@ -1,0 +1,258 @@
+import { useState, useRef, useCallback } from 'react';
+import { Rnd } from 'react-rnd';
+import TopBar from './components/TopBar';
+import Sidebar from './components/Sidebar';
+import PDFViewer from './components/PDFViewer';
+import { embedSignatureInPDF, formatTimestamp, downloadPDF } from './utils/pdfUtils';
+
+function App() {
+  const [userName, setUserName] = useState('');
+  const [selectedSignature, setSelectedSignature] = useState(null);
+  const [pdfFile, setPdfFile] = useState(null);
+  const [pdfArrayBuffer, setPdfArrayBuffer] = useState(null);
+  const [placedSignatures, setPlacedSignatures] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const pdfContainerRef = useRef(null);
+
+  const handlePDFUpload = ({ file, arrayBuffer, name }) => {
+    setPdfFile(arrayBuffer);
+    setPdfArrayBuffer(arrayBuffer);
+    setPlacedSignatures([]);
+  };
+
+  const handlePageClick = useCallback(
+    (e, pageIndex) => {
+      if (!selectedSignature || !userName.trim()) {
+        if (!userName.trim()) {
+          alert('Please enter your name first');
+        } else {
+          alert('Please select a signature first');
+        }
+        return;
+      }
+
+      // Get the page element
+      const pageElement = e.currentTarget;
+      const rect = pageElement.getBoundingClientRect();
+      const containerRect = pdfContainerRef.current.getBoundingClientRect();
+
+      // Calculate relative position
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Calculate absolute position relative to container
+      const absoluteX = e.clientX - containerRect.left + pdfContainerRef.current.scrollLeft;
+      const absoluteY = e.clientY - containerRect.top + pdfContainerRef.current.scrollTop;
+
+      const newSignature = {
+        id: Date.now(),
+        imageData: selectedSignature.image,
+        userName: userName,
+        timestamp: formatTimestamp(),
+        x: x,
+        y: y,
+        absoluteX: absoluteX,
+        absoluteY: absoluteY,
+        width: 150,
+        height: 75,
+        pageIndex: pageIndex,
+      };
+
+      setPlacedSignatures((prev) => [...prev, newSignature]);
+    },
+    [selectedSignature, userName]
+  );
+
+  const handleSignatureResize = (id, ref) => {
+    setPlacedSignatures((prev) =>
+      prev.map((sig) =>
+        sig.id === id
+          ? {
+              ...sig,
+              width: parseInt(ref.style.width),
+              height: parseInt(ref.style.height),
+            }
+          : sig
+      )
+    );
+  };
+
+  const handleSignatureDragStop = (id, d) => {
+    setPlacedSignatures((prev) =>
+      prev.map((sig) =>
+        sig.id === id
+          ? {
+              ...sig,
+              absoluteX: d.x,
+              absoluteY: d.y,
+            }
+          : sig
+      )
+    );
+    setIsDragging(false);
+  };
+
+  const handleRemoveSignature = (id) => {
+    setPlacedSignatures((prev) => prev.filter((sig) => sig.id !== id));
+  };
+
+  const handleExport = async () => {
+    if (!pdfArrayBuffer || placedSignatures.length === 0) {
+      alert('Please add at least one signature to the PDF');
+      return;
+    }
+
+    try {
+      // Calculate actual PDF coordinates
+      const signaturesWithPDFCoords = placedSignatures.map((sig) => {
+        const pageElements = document.querySelectorAll('.pdf-page');
+        const pageElement = pageElements[sig.pageIndex];
+        const pageCanvas = pageElement?.querySelector('canvas');
+
+        if (pageCanvas) {
+          const displayWidth = pageCanvas.offsetWidth;
+          const displayHeight = pageCanvas.offsetHeight;
+          const actualWidth = pageCanvas.width;
+          const actualHeight = pageCanvas.height;
+
+          const scaleX = actualWidth / displayWidth;
+          const scaleY = actualHeight / displayHeight;
+
+          return {
+            ...sig,
+            x: sig.x * scaleX,
+            y: sig.y * scaleY,
+            width: sig.width * scaleX,
+            height: sig.height * scaleY,
+          };
+        }
+        return sig;
+      });
+
+      const modifiedPdfBytes = await embedSignatureInPDF(
+        pdfArrayBuffer,
+        signaturesWithPDFCoords
+      );
+      downloadPDF(modifiedPdfBytes, 'signed-document.pdf');
+      alert('PDF exported successfully!');
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('Failed to export PDF: ' + error.message);
+    }
+  };
+
+  return (
+    <div className="h-screen flex flex-col">
+      <TopBar
+        userName={userName}
+        onUserNameChange={setUserName}
+        onPDFUpload={handlePDFUpload}
+        onExport={handleExport}
+        hasSignatures={placedSignatures.length > 0}
+        pdfFile={pdfFile}
+      />
+
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar onSignatureSelect={setSelectedSignature} />
+
+        <div className="flex-1 relative bg-gray-100">
+          {!pdfFile ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <svg
+                  className="mx-auto h-24 w-24 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+                <h3 className="mt-4 text-lg font-medium text-gray-900">Upload a PDF to get started</h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  Click "Upload PDF" button to begin signing your document
+                </p>
+                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                  <h4 className="text-sm font-semibold text-blue-900 mb-2">Quick Start Guide:</h4>
+                  <ol className="text-xs text-blue-800 text-left space-y-1 list-decimal list-inside">
+                    <li>Upload and save your signature image (left sidebar)</li>
+                    <li>Enter your name in the top bar</li>
+                    <li>Upload a PDF document</li>
+                    <li>Click on the PDF where you want to place your signature</li>
+                    <li>Drag corners to resize signature if needed</li>
+                    <li>Export your signed PDF</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="relative h-full">
+              <PDFViewer
+                pdfFile={pdfFile}
+                onPageClick={handlePageClick}
+                containerRef={pdfContainerRef}
+              />
+
+              {placedSignatures.map((sig) => (
+                <Rnd
+                  key={sig.id}
+                  default={{
+                    x: sig.absoluteX,
+                    y: sig.absoluteY,
+                    width: sig.width,
+                    height: sig.height,
+                  }}
+                  minWidth={100}
+                  minHeight={50}
+                  bounds="parent"
+                  lockAspectRatio={true}
+                  onDragStart={() => setIsDragging(true)}
+                  onDragStop={(e, d) => handleSignatureDragStop(sig.id, d)}
+                  onResizeStop={(e, direction, ref, delta, position) => {
+                    handleSignatureResize(sig.id, ref);
+                    handleSignatureDragStop(sig.id, position);
+                  }}
+                  style={{
+                    border: '2px dashed #0ea5e9',
+                    background: 'rgba(14, 165, 233, 0.1)',
+                    cursor: isDragging ? 'grabbing' : 'grab',
+                  }}
+                >
+                  <div className="relative h-full p-1">
+                    <img
+                      src={sig.imageData}
+                      alt="Signature"
+                      className="h-full object-contain pointer-events-none"
+                      draggable={false}
+                    />
+                    <button
+                      onClick={() => handleRemoveSignature(sig.id)}
+                      className="absolute -top-3 -right-3 bg-red-500 hover:bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow-lg"
+                      style={{ pointerEvents: 'auto' }}
+                    >
+                      ×
+                    </button>
+                    <div
+                      className="absolute left-full ml-2 top-0 text-xs bg-white p-1 border border-gray-300 rounded shadow-sm"
+                      style={{ whiteSpace: 'nowrap', pointerEvents: 'none' }}
+                    >
+                      <div className="font-medium">Digitally signed by</div>
+                      <div>{sig.userName}</div>
+                      <div className="text-gray-600">{sig.timestamp}</div>
+                    </div>
+                  </div>
+                </Rnd>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
