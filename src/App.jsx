@@ -157,11 +157,11 @@ function App() {
 
         <div className="flex-1 relative bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200">
           {!pdfFile ? (
-            <div className="flex items-center justify-center h-full p-8">
-              <div className="text-center max-w-2xl">
-                <div className="bg-gradient-to-br from-primary-100 to-accent-100 rounded-full p-8 inline-block mb-6 shadow-lg">
+            <div className="flex items-center justify-center h-full p-6">
+              <div className="text-center max-w-xl">
+                <div className="bg-primary-100 rounded-full p-6 inline-block mb-4">
                   <svg
-                    className="h-24 w-24 text-primary-600"
+                    className="h-16 w-16 text-primary-600"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -174,46 +174,44 @@ function App() {
                     />
                   </svg>
                 </div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-3">Upload a PDF to Get Started</h3>
-                <p className="text-lg text-gray-600 mb-8">
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Upload a PDF to Get Started</h3>
+                <p className="text-sm text-gray-600 mb-6">
                   Click "Upload PDF" button in the top bar to begin signing your document
                 </p>
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-200 rounded-2xl p-6 shadow-soft">
-                  <div className="flex items-center justify-center mb-4">
-                    <div className="bg-blue-500 rounded-full p-2">
-                      <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <h4 className="text-xl font-bold text-blue-900 ml-3">Quick Start Guide</h4>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="flex items-center justify-center mb-3">
+                    <svg className="h-5 w-5 text-blue-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h4 className="text-base font-bold text-blue-900">Quick Start Guide</h4>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
-                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
+                    <div className="flex items-start space-x-2 bg-white rounded p-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">1</div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">Upload Signature</p>
-                        <p className="text-xs text-gray-600">Upload your signature image in the left sidebar</p>
+                        <p className="text-xs font-semibold text-gray-800">Upload Signature</p>
+                        <p className="text-xs text-gray-600">Upload signature in sidebar</p>
                       </div>
                     </div>
-                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
-                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                    <div className="flex items-start space-x-2 bg-white rounded p-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">2</div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">Enter Your Name</p>
-                        <p className="text-xs text-gray-600">Type your name in the top bar input field</p>
+                        <p className="text-xs font-semibold text-gray-800">Enter Your Name</p>
+                        <p className="text-xs text-gray-600">Type name in top bar</p>
                       </div>
                     </div>
-                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
-                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                    <div className="flex items-start space-x-2 bg-white rounded p-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">3</div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">Upload PDF</p>
-                        <p className="text-xs text-gray-600">Click "Upload PDF" to select your document</p>
+                        <p className="text-xs font-semibold text-gray-800">Upload PDF</p>
+                        <p className="text-xs text-gray-600">Click "Upload PDF" button</p>
                       </div>
                     </div>
-                    <div className="flex items-start space-x-3 bg-white rounded-lg p-4 shadow-sm">
-                      <div className="flex-shrink-0 w-8 h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold">4</div>
+                    <div className="flex items-start space-x-2 bg-white rounded p-3">
+                      <div className="flex-shrink-0 w-6 h-6 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-xs">4</div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">Place & Sign</p>
-                        <p className="text-xs text-gray-600">Click on PDF to place signature, then export</p>
+                        <p className="text-xs font-semibold text-gray-800">Place & Sign</p>
+                        <p className="text-xs text-gray-600">Click PDF to place signature</p>
                       </div>
                     </div>
                   </div>
